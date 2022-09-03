@@ -1,6 +1,6 @@
-# gha-trigger-set-env-action
+# set-env-action
 
-GitHub Actions to set Environment variables for [gha-trigger](https://github.com/suzuki-shunsuke/gha-trigger)
+GitHub Actions to set Environment variables for [gha-trigger](https://github.com/gha-trigger/gha-trigger)
 
 ## Example
 
@@ -14,7 +14,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: suzuki-shunsuke/gha-trigger-set-env-action@main
+      - uses: gha-trigger/set-env-action@main
         with:
           data: ${{inputs.data}}
 ```
