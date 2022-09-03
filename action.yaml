@@ -12,49 +12,57 @@ runs:
         # GITHUB_ACTOR
         # > The name of the person or app that initiated the workflow.
         # > For example, octocat.
-        echo "GHA_ACTOR=${{inputs.data.event.sender.login}}" >> "$GITHUB_ENV"
+        echo "GHA_ACTOR=${{fromJSON(inputs.data).event.sender.login}}" >> "$GITHUB_ENV"
         # GITHUB_EVENT_NAME
-        echo "GHA_EVENT_NAME=${{inputs.data.event_name}}" >> "$GITHUB_ENV"
+        echo "GHA_EVENT_NAME=${{fromJSON(inputs.data).event_name}}" >> "$GITHUB_ENV"
         # GITHUB_HEAD_REF
-        echo "GHA_HEAD_REF=${{inputs.data.event.pull_request.head.ref}}" >> "$GITHUB_ENV"
+        echo "GHA_HEAD_REF=${{fromJSON(inputs.data).event.pull_request.head.ref}}" >> "$GITHUB_ENV"
         # GITHUB_POSITORY
-        echo "GHA_REPOSITORY=${{inputs.data.event.repository.full_name}}" >> "$GITHUB_ENV"
+        echo "GHA_REPOSITORY=${{fromJSON(inputs.data).event.repository.full_name}}" >> "$GITHUB_ENV"
         # GITHUB_POSITORY_OWNER
-        echo "GHA_REPOSITORY_OWNER=${{inputs.data.event.repository.owner.login}}" >> "$GITHUB_ENV"
+        echo "GHA_REPOSITORY_OWNER=${{fromJSON(inputs.data).event.repository.owner.login}}" >> "$GITHUB_ENV"
         # GITHUB_SHA
-        echo "GHA_SHA=${{inputs.data.event.sha}}" >> "$GITHUB_ENV"
+        # > The commit SHA that triggered the workflow.
+        # > The value of this commit SHA depends on the event that triggered the workflow.
+        # > For more information, see "Events that trigger workflows."
+        # > https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+        # > For example, ffac537e6cbbf934b08745a378932722df287a53.
+        echo "GHA_SHA=${{fromJSON(inputs.data).event.sha}}" >> "$GITHUB_ENV"
     - shell: bash
       # GITHUB_BASE_REF
       # > The name of the base ref or target branch of the pull request in a workflow run.
       # > This is only set when the event that triggers a workflow run is either pull_request or pull_request_target.
       # > For example, main.
       run: |
-        echo "GHA_BASE_REF=${{inputs.data.event.pull_request.base.ref}}" >> "$GITHUB_ENV"
-        echo "GHA_HEAD_SHA=${{inputs.data.event.pull_request.head.sha}}" >> "$GITHUB_ENV"
-      if: inputs.data.event_name == 'pull_request' || inputs.data.event_name == 'pull_request_target'
+        echo "GHA_BASE_REF=${{fromJSON(inputs.data).event.pull_request.base.ref}}" >> "$GITHUB_ENV"
+        echo "GHA_HEAD_SHA=${{fromJSON(inputs.data).event.pull_request.head.sha}}" >> "$GITHUB_ENV"
+      if: env.GHA_EVENT_NAME == 'pull_request' || env.GHA_EVENT_NAME == 'pull_request_target'
     - shell: bash
       # GITHUB_REF
       # > For workflows triggered by pull_request, this is the pull request merge branch.
       run: |
-        echo "GHA_REF=refs/pull/${{inputs.data.event.pull_request.number}}/merge" >> "$GITHUB_ENV"
+        echo "GHA_REF=refs/pull/${{fromJSON(inputs.data).event.pull_request.number}}/merge" >> "$GITHUB_ENV"
         # GITHUB_REF_NAME
-        echo "GHA_REF_NAME=${{inputs.data.event.pull_request.number}}/merge" >> "$GITHUB_ENV"
-      if: inputs.data.event_name == 'pull_request'
+        echo "GHA_REF_NAME=${{fromJSON(inputs.data).event.pull_request.number}}/merge" >> "$GITHUB_ENV"
+        # GITHUB_SHA
+        # > Last merge commit on the GITHUB_REF branch
+        echo "GHA_SHA=${{fromJSON(inputs.data).event.pull_request.merge_commit_sha}}" >> "$GITHUB_ENV"
+      if: env.GHA_EVENT_NAME == 'pull_request'
     - shell: bash
       # GITHUB_REF
       # > For workflows triggered by release, this is the release tag created.
       run: |
-        echo "GHA_REF=${{inputs.data.event.release.tag_name}}" >> "$GITHUB_ENV"
+        echo "GHA_REF=${{fromJSON(inputs.data).event.release.tag_name}}" >> "$GITHUB_ENV"
         # GITHUB_REF_NAME
-        echo "GHA_REF_NAME=${{inputs.data.event.release.tag_name}}" >> "$GITHUB_ENV"
-      if: inputs.data.event_name == 'release'
+        echo "GHA_REF_NAME=${{fromJSON(inputs.data).event.release.tag_name}}" >> "$GITHUB_ENV"
+      if: env.GHA_EVENT_NAME == 'release'
     - shell: bash
       # GITHUB_REF
       # > For workflows triggered by push, this is the branch or tag ref that was pushed.
       run: |
-        echo "GHA_REF=${{inputs.data.event.ref}}" >> "$GITHUB_ENV"
-        echo "GHA_REF_NAME=$(basename "${{inputs.data.event.ref}}")" >> "$GITHUB_ENV"
-      if: inputs.data.event_name == 'push'
+        echo "GHA_REF=${{fromJSON(inputs.data).event.ref}}" >> "$GITHUB_ENV"
+        echo "GHA_REF_NAME=$(basename "${{fromJSON(inputs.data).event.ref}}")" >> "$GITHUB_ENV"
+      if: env.GHA_EVENT_NAME == 'push'
       # TODO GITHUB_REF
       # > The branch or tag ref that triggered the workflow run.
       # > For other triggers, this is the branch or tag ref that triggered the workflow run.
