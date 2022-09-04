@@ -15,8 +15,6 @@ runs:
         echo "GHA_ACTOR=${{fromJSON(inputs.data).event.sender.login}}" >> "$GITHUB_ENV"
         # GITHUB_EVENT_NAME
         echo "GHA_EVENT_NAME=${{fromJSON(inputs.data).event_name}}" >> "$GITHUB_ENV"
-        # GITHUB_HEAD_REF
-        echo "GHA_HEAD_REF=${{fromJSON(inputs.data).event.pull_request.head.ref}}" >> "$GITHUB_ENV"
         # GITHUB_POSITORY
         echo "GHA_REPOSITORY=${{fromJSON(inputs.data).event.repository.full_name}}" >> "$GITHUB_ENV"
         # GITHUB_POSITORY_OWNER
@@ -28,14 +26,21 @@ runs:
         # > https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
         # > For example, ffac537e6cbbf934b08745a378932722df287a53.
         echo "GHA_SHA=${{fromJSON(inputs.data).event.sha}}" >> "$GITHUB_ENV"
+        echo "GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.sha}}" >> "$GITHUB_ENV"
     - shell: bash
-      # GITHUB_BASE_REF
-      # > The name of the base ref or target branch of the pull request in a workflow run.
-      # > This is only set when the event that triggers a workflow run is either pull_request or pull_request_target.
-      # > For example, main.
       run: |
+        # GITHUB_BASE_REF
+        # > The name of the base ref or target branch of the pull request in a workflow run.
+        # > This is only set when the event that triggers a workflow run is either pull_request or pull_request_target.
+        # > For example, main.
         echo "GHA_BASE_REF=${{fromJSON(inputs.data).event.pull_request.base.ref}}" >> "$GITHUB_ENV"
         echo "GHA_HEAD_SHA=${{fromJSON(inputs.data).event.pull_request.head.sha}}" >> "$GITHUB_ENV"
+        echo "GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.pull_request.head.sha}}" >> "$GITHUB_ENV"
+        # GITHUB_HEAD_REF
+        # > The head ref or source branch of the pull request in a workflow run.
+        # > This property is only set when the event that triggers a workflow run is either pull_request or pull_request_target.
+        # > For example, feature-branch-1.
+        echo "GHA_HEAD_REF=${{fromJSON(inputs.data).event.pull_request.head.ref}}" >> "$GITHUB_ENV"
       if: env.GHA_EVENT_NAME == 'pull_request' || env.GHA_EVENT_NAME == 'pull_request_target'
     - shell: bash
       # GITHUB_REF
@@ -62,6 +67,11 @@ runs:
       run: |
         echo "GHA_REF=${{fromJSON(inputs.data).event.ref}}" >> "$GITHUB_ENV"
         echo "GHA_REF_NAME=$(basename "${{fromJSON(inputs.data).event.ref}}")" >> "$GITHUB_ENV"
+        # TODO
+        # When you delete a branch,
+        # the SHA in the workflow run (and its associated refs) reverts to the default branch of the repository.
+        echo "GHA_SHA=${{fromJSON(inputs.data).event.after}}" >> "$GITHUB_ENV"
+        echo "GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.after}}" >> "$GITHUB_ENV"
       if: env.GHA_EVENT_NAME == 'push'
       # TODO GITHUB_REF
       # > The branch or tag ref that triggered the workflow run.
