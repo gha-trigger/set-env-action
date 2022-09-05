@@ -71,7 +71,7 @@ runs:
         # When you delete a branch,
         # the SHA in the workflow run (and its associated refs) reverts to the default branch of the repository.
         echo "GHA_SHA=${{fromJSON(inputs.data).event.head_commit.id}}" >> "$GITHUB_ENV"
-        echo "GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).head_commit.id}}" >> "$GITHUB_ENV"
+        echo "GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.head_commit.id}}" >> "$GITHUB_ENV"
       if: env.GHA_EVENT_NAME == 'push'
       # TODO GITHUB_REF
       # > The branch or tag ref that triggered the workflow run.
