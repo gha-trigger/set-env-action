@@ -51,7 +51,7 @@ runs:
         echo "GHA_REF_NAME=${{fromJSON(inputs.data).event.pull_request.number}}/merge" >> "$GITHUB_ENV"
         # GITHUB_SHA
         # > Last merge commit on the GITHUB_REF branch
-        echo "GHA_SHA=${{fromJSON(inputs.data).event.pull_request.merge_commit_sha}}" >> "$GITHUB_ENV"
+        echo "GHA_SHA=${{fromJSON(inputs.data).pull_request.merge_commit_sha}}" >> "$GITHUB_ENV"
       if: env.GHA_EVENT_NAME == 'pull_request'
     - shell: bash
       # GITHUB_REF
