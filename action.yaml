@@ -42,18 +42,17 @@ runs:
         # > This property is only set when the event that triggers a workflow run is either pull_request or pull_request_target.
         # > For example, feature-branch-1.
         echo "GHA_HEAD_REF=${{fromJSON(inputs.data).event.pull_request.head.ref}}" >> "$GITHUB_ENV"
-      if: env.GHA_EVENT_NAME == 'pull_request' || env.GHA_EVENT_NAME == 'pull_request_target'
-    - shell: bash
-      # GITHUB_REF
-      # > For workflows triggered by pull_request, this is the pull request merge branch.
-      run: |
+
+        # GITHUB_REF
+        # > For workflows triggered by pull_request, this is the pull request merge branch.
         echo "GHA_REF=refs/pull/${{fromJSON(inputs.data).event.pull_request.number}}/merge" >> "$GITHUB_ENV"
         # GITHUB_REF_NAME
         echo "GHA_REF_NAME=${{fromJSON(inputs.data).event.pull_request.number}}/merge" >> "$GITHUB_ENV"
         # GITHUB_SHA
         # > Last merge commit on the GITHUB_REF branch
         echo "GHA_SHA=${{fromJSON(inputs.data).pull_request.merge_commit_sha}}" >> "$GITHUB_ENV"
-      if: env.GHA_EVENT_NAME == 'pull_request'
+        echo "GHA_PULL_REQUEST_NUMBER" >> "$GITHUB_ENV"
+      if: startsWith(env.GHA_EVENT_NAME, 'pull_request')
     - shell: bash
       # GITHUB_REF
       # > For workflows triggered by release, this is the release tag created.
