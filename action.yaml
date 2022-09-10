@@ -19,6 +19,7 @@ runs:
         echo "GHA_REPOSITORY=${{fromJSON(inputs.data).event.repository.full_name}}" >> "$GITHUB_ENV"
         # GITHUB_POSITORY_OWNER
         echo "GHA_REPOSITORY_OWNER=${{fromJSON(inputs.data).event.repository.owner.login}}" >> "$GITHUB_ENV"
+        echo "GHA_REPOSITORY_NAME=${{fromJSON(inputs.data).event.repository.name}}" >> "$GITHUB_ENV"
         # GITHUB_SHA
         # > The commit SHA that triggered the workflow.
         # > The value of this commit SHA depends on the event that triggered the workflow.
