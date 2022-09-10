@@ -28,6 +28,12 @@ runs:
         # > For example, ffac537e6cbbf934b08745a378932722df287a53.
         echo "GHA_SHA=${{fromJSON(inputs.data).event.sha}}" >> "$GITHUB_ENV"
         echo "GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.sha}}" >> "$GITHUB_ENV"
+        event_path=$(mktemp)
+        echo "$INPUTS_EVENT" > "$event_path"
+        echo "GHA_EVENT_PATH=$event_path" >> "$GITHUB_ENV"
+      env:
+        INPUTS_EVENT: ${{toJSON(fromJSON(inputs.data).event)}}
+
     - shell: bash
       run: |
         # GITHUB_BASE_REF
