@@ -9,28 +9,27 @@ runs:
   steps:
     - shell: bash
       run: |
+        event_path=$(mktemp)
+        echo "$INPUTS_EVENT" > "$event_path"
         # GITHUB_ACTOR
         # > The name of the person or app that initiated the workflow.
         # > For example, octocat.
-        echo "GHA_ACTOR=${{fromJSON(inputs.data).event.sender.login}}" >> "$GITHUB_ENV"
-        # GITHUB_EVENT_NAME
-        echo "GHA_EVENT_NAME=${{fromJSON(inputs.data).event_name}}" >> "$GITHUB_ENV"
-        # GITHUB_POSITORY
-        echo "GHA_REPOSITORY=${{fromJSON(inputs.data).event.repository.full_name}}" >> "$GITHUB_ENV"
-        # GITHUB_POSITORY_OWNER
-        echo "GHA_REPOSITORY_OWNER=${{fromJSON(inputs.data).event.repository.owner.login}}" >> "$GITHUB_ENV"
-        echo "GHA_REPOSITORY_NAME=${{fromJSON(inputs.data).event.repository.name}}" >> "$GITHUB_ENV"
         # GITHUB_SHA
         # > The commit SHA that triggered the workflow.
         # > The value of this commit SHA depends on the event that triggered the workflow.
         # > For more information, see "Events that trigger workflows."
         # > https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
         # > For example, ffac537e6cbbf934b08745a378932722df287a53.
-        echo "GHA_SHA=${{fromJSON(inputs.data).event.sha}}" >> "$GITHUB_ENV"
-        echo "GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.sha}}" >> "$GITHUB_ENV"
-        event_path=$(mktemp)
-        echo "$INPUTS_EVENT" > "$event_path"
-        echo "GHA_EVENT_PATH=$event_path" >> "$GITHUB_ENV"
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_ACTOR=${{fromJSON(inputs.data).event.sender.login}}
+        GHA_EVENT_NAME=${{fromJSON(inputs.data).event_name}}
+        GHA_REPOSITORY=${{fromJSON(inputs.data).event.repository.full_name}}
+        GHA_REPOSITORY_OWNER=${{fromJSON(inputs.data).event.repository.owner.login}}
+        GHA_REPOSITORY_NAME=${{fromJSON(inputs.data).event.repository.name}}
+        GHA_SHA=${{fromJSON(inputs.data).event.sha}}
+        GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.sha}}
+        GHA_EVENT_PATH=$event_path
+        EOS
       env:
         INPUTS_EVENT: ${{toJSON(fromJSON(inputs.data).event)}}
 
@@ -40,44 +39,47 @@ runs:
         # > The name of the base ref or target branch of the pull request in a workflow run.
         # > This is only set when the event that triggers a workflow run is either pull_request or pull_request_target.
         # > For example, main.
-        echo "GHA_BASE_REF=${{fromJSON(inputs.data).event.pull_request.base.ref}}" >> "$GITHUB_ENV"
-        echo "GHA_HEAD_SHA=${{fromJSON(inputs.data).event.pull_request.head.sha}}" >> "$GITHUB_ENV"
-        echo "GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.pull_request.head.sha}}" >> "$GITHUB_ENV"
         # GITHUB_HEAD_REF
         # > The head ref or source branch of the pull request in a workflow run.
         # > This property is only set when the event that triggers a workflow run is either pull_request or pull_request_target.
         # > For example, feature-branch-1.
-        echo "GHA_HEAD_REF=${{fromJSON(inputs.data).event.pull_request.head.ref}}" >> "$GITHUB_ENV"
-
         # GITHUB_REF
         # > For workflows triggered by pull_request, this is the pull request merge branch.
-        echo "GHA_REF=refs/pull/${{fromJSON(inputs.data).event.pull_request.number}}/merge" >> "$GITHUB_ENV"
-        # GITHUB_REF_NAME
-        echo "GHA_REF_NAME=${{fromJSON(inputs.data).event.pull_request.number}}/merge" >> "$GITHUB_ENV"
         # GITHUB_SHA
         # > Last merge commit on the GITHUB_REF branch
-        echo "GHA_SHA=${{fromJSON(inputs.data).pull_request.merge_commit_sha}}" >> "$GITHUB_ENV"
-        echo "GHA_PULL_REQUEST_NUMBER=${{fromJSON(inputs.data).event.pull_request.number}}" >> "$GITHUB_ENV"
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_BASE_REF=${{fromJSON(inputs.data).event.pull_request.base.ref}}
+        GHA_HEAD_SHA=${{fromJSON(inputs.data).event.pull_request.head.sha}}
+        GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.pull_request.head.sha}}
+        GHA_HEAD_REF=${{fromJSON(inputs.data).event.pull_request.head.ref}}
+        GHA_REF=refs/pull/${{fromJSON(inputs.data).event.pull_request.number}}/merge
+        GHA_REF_NAME=${{fromJSON(inputs.data).event.pull_request.number}}/merge
+        GHA_SHA=${{fromJSON(inputs.data).pull_request.merge_commit_sha}}
+        GHA_PULL_REQUEST_NUMBER=${{fromJSON(inputs.data).event.pull_request.number}}
+        EOS
       if: startsWith(env.GHA_EVENT_NAME, 'pull_request')
     - shell: bash
       # GITHUB_REF
       # > For workflows triggered by release, this is the release tag created.
       run: |
-        echo "GHA_REF=${{fromJSON(inputs.data).event.release.tag_name}}" >> "$GITHUB_ENV"
-        # GITHUB_REF_NAME
-        echo "GHA_REF_NAME=${{fromJSON(inputs.data).event.release.tag_name}}" >> "$GITHUB_ENV"
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_REF=${{fromJSON(inputs.data).event.release.tag_name}}
+        GHA_REF_NAME=${{fromJSON(inputs.data).event.release.tag_name}}
+        EOS
       if: env.GHA_EVENT_NAME == 'release'
     - shell: bash
       # GITHUB_REF
       # > For workflows triggered by push, this is the branch or tag ref that was pushed.
       run: |
-        echo "GHA_REF=${{fromJSON(inputs.data).event.ref}}" >> "$GITHUB_ENV"
-        echo "GHA_REF_NAME=$(basename "${{fromJSON(inputs.data).event.ref}}")" >> "$GITHUB_ENV"
         # TODO
         # When you delete a branch,
         # the SHA in the workflow run (and its associated refs) reverts to the default branch of the repository.
-        echo "GHA_SHA=${{fromJSON(inputs.data).event.head_commit.id}}" >> "$GITHUB_ENV"
-        echo "GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.head_commit.id}}" >> "$GITHUB_ENV"
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_REF=${{fromJSON(inputs.data).event.ref}}
+        GHA_REF_NAME=$(basename "${{fromJSON(inputs.data).event.ref}}")
+        GHA_SHA=${{fromJSON(inputs.data).event.head_commit.id}}
+        GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.head_commit.id}}
+        EOS
       if: env.GHA_EVENT_NAME == 'push'
       # TODO GITHUB_REF
       # > The branch or tag ref that triggered the workflow run.
@@ -88,3 +90,19 @@ runs:
 
       # TODO GITHUB_REF_NAME
       # > The branch or tag name that triggered the workflow run. For example, feature-branch-1.
+    - shell: bash
+      run: |
+        env_path=$(mktemp)
+        cat << EOS >> "$env_path"
+        export GITHUB_ACTOR=$GHA_ACTOR
+        export GITHUB_BASE_REF=$GHA_BASE_REF
+        export GITHUB_EVENT_NAME=$GHA_EVENT_NAME
+        export GITHUB_HEAD_REF=$GHA_HEAD_REF
+        export GITHUB_REF=$GHA_REF
+        export GITHUB_REF_NAME=$GHA_REF_NAME
+        export GITHUB_REPOSITORY=$GHA_REPOSITORY
+        export GITHUB_REPOSITORY_OWNER=$GHA_REPOSITORY_OWNER
+        export GITHUB_SHA=$GHA_SHA
+        export GITHUB_EVENT_PATH=$GHA_EVENT_PATH
+        EOS
+        echo "GHA_ENV=$env_path" >> "$GITHUB_ENV"
