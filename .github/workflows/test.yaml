@@ -17,6 +17,7 @@ jobs:
             {
               "event_name": "pull_request",
               "event": {
+                "number": 149,
                 "sender": {
                   "login": "suzuki-shunsuke"
                 },
@@ -28,7 +29,6 @@ jobs:
                   }
                 },
                 "pull_request": {
-                  "number": 149,
                   "merge_commit_sha": "4528ea7ab7a8eef7e596097934a78eab90fb8b33",
                   "base": {
                     "ref": "main"
