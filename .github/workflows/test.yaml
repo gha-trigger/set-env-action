@@ -1,0 +1,105 @@
+name: test
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          data: |
+            {
+              "event_name": "pull_request",
+              "event": {
+                "sha": "a705bd6d8bc3882c983477cb3f20ab74ef8c24c2",
+                "sender": {
+                  "login": "suzuki-shunsuke"
+                },
+                "repository": {
+                  "full_name": "gha-trigger/gha-trigger",
+                  "name": "gha-trigger",
+                  "owner": {
+                    "login": "gha-trigger"
+                  }
+                },
+                "pull_request": {
+                  "number": 149,
+                  "merge_commit_sha": "4528ea7ab7a8eef7e596097934a78eab90fb8b33",
+                  "base": {
+                    "ref": "main"
+                  },
+                  "head": {
+                    "sha": "b6d8f3331c6845997b9408163a127e01fd32c120",
+                    "ref": "renovate/github.com-aws-aws-sdk-go-1.x"
+                  },
+                  "html_url": "https://github.com/gha-trigger/step-summary-action/pull/9"
+                }
+              }
+            }
+      - name: Test GHA_ACTOR
+        run: |
+          [ "$GHA_ACTOR" = suzuki-shunsuke ]
+      - name: Test GHA_EVENT_NAME
+        run: |
+          [ "$GHA_EVENT_NAME" = pull_request ]
+      - name: Test GHA_REPOSITORY
+        run: |
+          [ "$GHA_REPOSITORY" = gha-trigger/gha-trigger ]
+      - name: Test GHA_REPOSITORY_OWNER
+        run: |
+          [ "$GHA_REPOSITORY_OWNER" = gha-trigger ]
+      - name: Test GHA_REPOSITORY_NAME
+        run: |
+          [ "$GHA_REPOSITORY_NAME" = gha-trigger ]
+  test-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          data: |
+            {
+              "event_name": "push",
+              "event": {
+                "sha": "a705bd6d8bc3882c983477cb3f20ab74ef8c24c2",
+                "sender": {
+                  "login": "suzuki-shunsuke"
+                },
+                "repository": {
+                  "full_name": "gha-trigger/gha-trigger",
+                  "name": "gha-trigger",
+                  "owner": {
+                    "login": "gha-trigger"
+                  }
+                }
+              }
+            }
+  test-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          data: |
+            {
+              "event_name": "push",
+              "event": {
+                "sha": "a705bd6d8bc3882c983477cb3f20ab74ef8c24c2",
+                "sender": {
+                  "login": "suzuki-shunsuke"
+                },
+                "repository": {
+                  "full_name": "gha-trigger/gha-trigger",
+                  "name": "gha-trigger",
+                  "owner": {
+                    "login": "gha-trigger"
+                  }
+                }
+              }
+            }
