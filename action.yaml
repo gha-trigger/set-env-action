@@ -52,10 +52,10 @@ runs:
         GHA_HEAD_SHA=${{fromJSON(inputs.data).event.pull_request.head.sha}}
         GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.pull_request.head.sha}}
         GHA_HEAD_REF=${{fromJSON(inputs.data).event.pull_request.head.ref}}
-        GHA_REF=refs/pull/${{fromJSON(inputs.data).event.pull_request.number}}/merge
-        GHA_REF_NAME=${{fromJSON(inputs.data).event.pull_request.number}}/merge
+        GHA_REF=refs/pull/${{fromJSON(inputs.data).event.number}}/merge
+        GHA_REF_NAME=${{fromJSON(inputs.data).event.number}}/merge
         GHA_SHA=${{fromJSON(inputs.data).event.pull_request.merge_commit_sha}}
-        GHA_PULL_REQUEST_NUMBER=${{fromJSON(inputs.data).event.pull_request.number}}
+        GHA_PULL_REQUEST_NUMBER=${{fromJSON(inputs.data).event.number}}
         EOS
       if: startsWith(env.GHA_EVENT_NAME, 'pull_request')
 
