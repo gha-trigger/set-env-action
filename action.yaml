@@ -58,6 +58,7 @@ runs:
         GHA_PULL_REQUEST_NUMBER=${{fromJSON(inputs.data).event.pull_request.number}}
         EOS
       if: startsWith(env.GHA_EVENT_NAME, 'pull_request')
+
     - shell: bash
       # GITHUB_REF
       # > For workflows triggered by release, this is the release tag created.
@@ -67,6 +68,7 @@ runs:
         GHA_REF_NAME=${{fromJSON(inputs.data).event.release.tag_name}}
         EOS
       if: env.GHA_EVENT_NAME == 'release'
+
     - shell: bash
       # GITHUB_REF
       # > For workflows triggered by push, this is the branch or tag ref that was pushed.
@@ -75,12 +77,28 @@ runs:
         # When you delete a branch,
         # the SHA in the workflow run (and its associated refs) reverts to the default branch of the repository.
         cat << EOS >> "$GITHUB_ENV"
-        GHA_REF=${{fromJSON(inputs.data).event.ref}}
-        GHA_REF_NAME=$(basename "${{fromJSON(inputs.data).event.ref}}")
+        GHA_REF=$REF
         GHA_SHA=${{fromJSON(inputs.data).event.head_commit.id}}
         GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.head_commit.id}}
         EOS
       if: env.GHA_EVENT_NAME == 'push'
+      env:
+        REF: ${{fromJSON(inputs.data).event.ref}}
+
+    - shell: bash
+      run: |
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_REF_NAME=${GHA_REF#refs/heads/}
+        EOS
+      if: "env.GHA_EVENT_NAME == 'push' && startsWith(env.GHA_REF, 'refs/heads/')"
+
+    - shell: bash
+      run: |
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_REF_NAME=${GHA_REF#refs/tags/}
+        EOS
+      if: "env.GHA_EVENT_NAME == 'push' && startsWith(env.GHA_REF, 'refs/tags/')"
+
       # TODO GITHUB_REF
       # > The branch or tag ref that triggered the workflow run.
       # > For other triggers, this is the branch or tag ref that triggered the workflow run.

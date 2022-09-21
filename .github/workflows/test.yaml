@@ -17,7 +17,6 @@ jobs:
             {
               "event_name": "pull_request",
               "event": {
-                "sha": "a705bd6d8bc3882c983477cb3f20ab74ef8c24c2",
                 "sender": {
                   "login": "suzuki-shunsuke"
                 },
@@ -91,6 +90,7 @@ jobs:
             {
               "event_name": "push",
               "event": {
+                "ref": "refs/heads/renovate/github.com-aws-aws-sdk-go-1.x",
                 "sender": {
                   "login": "suzuki-shunsuke"
                 },
@@ -123,16 +123,16 @@ jobs:
           [ "$GHA_REPOSITORY_NAME" = gha-trigger ]
       - name: Test GHA_SHA
         run: |
-          [ "$GHA_SHA" = 4528ea7ab7a8eef7e596097934a78eab90fb8b33 ]
+          [ "$GHA_SHA" = a705bd6d8bc3882c983477cb3f20ab74ef8c24c2 ]
       - name: Test GHA_COMMIT_STATUS_SHA
         run: |
-          [ "$GHA_COMMIT_STATUS_SHA" = 4528ea7ab7a8eef7e596097934a78eab90fb8b33 ]
+          [ "$GHA_COMMIT_STATUS_SHA" = a705bd6d8bc3882c983477cb3f20ab74ef8c24c2 ]
       - name: Test GHA_REF
         run: |
-          [ "$GHA_REF" = ]
+          [ "$GHA_REF" = refs/heads/renovate/github.com-aws-aws-sdk-go-1.x ]
       - name: Test GHA_REF_NAME
         run: |
-          [ "$GHA_REF_NAME" = ]
+          [ "$GHA_REF_NAME" = renovate/github.com-aws-aws-sdk-go-1.x ]
       - name: Test GHA_ENV
         run: |
           [ -n "$GHA_ENV" ]
@@ -178,7 +178,7 @@ jobs:
           [ "$GHA_REPOSITORY_NAME" = gha-trigger ]
       - name: Test GHA_SHA
         run: |
-          [ "$GHA_SHA" = ]
+          [ "$GHA_SHA" = "" ]
       - name: Test GHA_REF
         run: |
           [ "$GHA_REF" = v0.1.0 ]
