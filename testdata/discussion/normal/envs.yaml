@@ -5,5 +5,5 @@ GHA_REPOSITORY_OWNER: octo-org
 GHA_REPOSITORY_NAME: octo-repo
 GHA_SHA:
 GHA_COMMIT_STATUS_SHA:
-GHA_REF: main
+GHA_REF: refs/heads/main
 GHA_REF_NAME: main

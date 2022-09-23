@@ -124,10 +124,11 @@ runs:
 
     - shell: bash
       run: |
+        # TODO GITHUB_REF: Branch or tag to be deployed (empty if created with a commit SHA)
         cat << EOS >> "$GITHUB_ENV"
         GHA_SHA=${{fromJSON(inputs.data).event.deployment.sha}}
         GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.deployment.sha}}
-        GHA_REF=${{fromJSON(inputs.data).event.deployment.ref}}
+        GHA_REF=refs/heads/${{fromJSON(inputs.data).event.deployment.ref}}
         GHA_REF_NAME=${{fromJSON(inputs.data).event.deployment.ref}}
         EOS
       if: env.GHA_EVENT_NAME == 'deployment' || env.GHA_EVENT_NAME == 'deployment_status'
