@@ -5,5 +5,5 @@ GHA_REPOSITORY_OWNER: Codertocat
 GHA_REPOSITORY_NAME: Hello-World
 GHA_SHA:
 GHA_COMMIT_STATUS_SHA:
-GHA_REF: master
+GHA_REF: refs/heads/master
 GHA_REF_NAME: master

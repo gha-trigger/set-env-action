@@ -29,7 +29,7 @@ runs:
         GHA_SHA=${{fromJSON(inputs.data).event.sha}}
         GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.sha}}
         GHA_EVENT_PATH=$event_path
-        GHA_REF=${{fromJSON(inputs.data).event.repository.default_branch}}
+        GHA_REF=refs/heads/${{fromJSON(inputs.data).event.repository.default_branch}}
         GHA_REF_NAME=${{fromJSON(inputs.data).event.repository.default_branch}}
         EOS
       env:
@@ -66,7 +66,7 @@ runs:
       # > For workflows triggered by release, this is the release tag created.
       run: |
         cat << EOS >> "$GITHUB_ENV"
-        GHA_REF=${{fromJSON(inputs.data).event.release.tag_name}}
+        GHA_REF=refs/tags/${{fromJSON(inputs.data).event.release.tag_name}}
         GHA_REF_NAME=${{fromJSON(inputs.data).event.release.tag_name}}
         EOS
       if: env.GHA_EVENT_NAME == 'release'
