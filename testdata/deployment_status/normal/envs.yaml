@@ -1,5 +1,5 @@
 GHA_ACTOR: Codertocat
-GHA_EVENT_NAME: deployment
+GHA_EVENT_NAME: deployment_status
 GHA_REPOSITORY: Codertocat/Hello-World
 GHA_REPOSITORY_OWNER: Codertocat
 GHA_REPOSITORY_NAME: Hello-World
