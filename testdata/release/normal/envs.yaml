@@ -1,0 +1,9 @@
+GHA_ACTOR: suzuki-shunsuke
+GHA_EVENT_NAME: release
+GHA_REPOSITORY: gha-trigger/gha-trigger
+GHA_REPOSITORY_OWNER: gha-trigger
+GHA_REPOSITORY_NAME: gha-trigger
+GHA_SHA:
+GHA_COMMIT_STATUS_SHA:
+GHA_REF: refs/tags/v0.1.0
+GHA_REF_NAME: v0.1.0

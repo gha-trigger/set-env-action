@@ -1,0 +1,9 @@
+sender:
+  login: suzuki-shunsuke
+release:
+  tag_name: v0.1.0
+repository:
+  full_name: gha-trigger/gha-trigger
+  name: gha-trigger
+  owner:
+    login: gha-trigger

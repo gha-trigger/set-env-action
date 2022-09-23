@@ -1,0 +1,8 @@
+number: 149
+sender:
+  login: suzuki-shunsuke
+repository:
+  full_name: gha-trigger/gha-trigger
+  name: gha-trigger
+  owner:
+    login: gha-trigger

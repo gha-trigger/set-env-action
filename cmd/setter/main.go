@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/sethvargo/go-githubactions"
 	"gopkg.in/yaml.v3"
@@ -15,26 +16,36 @@ func main() {
 	}
 }
 
-type Config struct {
-	Envs map[string]string
-	Data interface{}
-}
-
 func core() error {
 	// read config file
 	// test envs
-	file := os.Args[1]
-	cfg := &Config{}
-	f, err := os.Open(file)
+	dir := os.Args[1]
+
+	dataFile, err := os.Open(filepath.Join(dir, "data.yaml"))
 	if err != nil {
 		return err
 	}
-	defer f.Close()
-	if err := yaml.NewDecoder(f).Decode(cfg); err != nil {
+	defer dataFile.Close()
+	data := map[string]interface{}{}
+	if err := yaml.NewDecoder(dataFile).Decode(&data); err != nil {
 		return err
 	}
 
-	b, err := json.Marshal(cfg)
+	eventFile, err := os.Open(filepath.Join(dir, "event.yaml"))
+	if err != nil {
+		eventFile, err = os.Open(filepath.Join(dir, "event.json"))
+		if err != nil {
+			return err
+		}
+	}
+	defer eventFile.Close()
+	event := map[string]interface{}{}
+	if err := yaml.NewDecoder(eventFile).Decode(&event); err != nil {
+		return err
+	}
+	data["event"] = event
+
+	b, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}

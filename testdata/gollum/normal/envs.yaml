@@ -1,0 +1,9 @@
+GHA_ACTOR: rachmari
+GHA_EVENT_NAME: gollum
+GHA_REPOSITORY: Codertocat/Hello-World
+GHA_REPOSITORY_OWNER: Codertocat
+GHA_REPOSITORY_NAME: Hello-World
+GHA_SHA:
+GHA_COMMIT_STATUS_SHA:
+GHA_REF: refs/heads/master
+GHA_REF_NAME: master

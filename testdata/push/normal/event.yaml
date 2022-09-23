@@ -1,0 +1,10 @@
+ref: refs/heads/renovate/github.com-aws-aws-sdk-go-1.x
+sender:
+  login: suzuki-shunsuke
+head_commit:
+  id: a705bd6d8bc3882c983477cb3f20ab74ef8c24c2
+repository:
+  full_name: gha-trigger/gha-trigger
+  name: gha-trigger
+  owner:
+    login: gha-trigger

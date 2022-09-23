@@ -29,6 +29,8 @@ runs:
         GHA_SHA=${{fromJSON(inputs.data).event.sha}}
         GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.sha}}
         GHA_EVENT_PATH=$event_path
+        GHA_REF=refs/heads/${{fromJSON(inputs.data).event.repository.default_branch}}
+        GHA_REF_NAME=${{fromJSON(inputs.data).event.repository.default_branch}}
         EOS
       env:
         INPUTS_EVENT: ${{toJSON(fromJSON(inputs.data).event)}}
@@ -64,7 +66,7 @@ runs:
       # > For workflows triggered by release, this is the release tag created.
       run: |
         cat << EOS >> "$GITHUB_ENV"
-        GHA_REF=${{fromJSON(inputs.data).event.release.tag_name}}
+        GHA_REF=refs/tags/${{fromJSON(inputs.data).event.release.tag_name}}
         GHA_REF_NAME=${{fromJSON(inputs.data).event.release.tag_name}}
         EOS
       if: env.GHA_EVENT_NAME == 'release'
@@ -98,6 +100,40 @@ runs:
         GHA_REF_NAME=${GHA_REF#refs/tags/}
         EOS
       if: "env.GHA_EVENT_NAME == 'push' && startsWith(env.GHA_REF, 'refs/tags/')"
+
+    - shell: bash
+      run: |
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_REF_NAME=${{fromJSON(inputs.data).event.ref}}
+        EOS
+      if: contains(fromJSON('["create", "delete"]'), env.GHA_EVENT_NAME)
+
+    - shell: bash
+      run: |
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_REF=refs/heads/${{fromJSON(inputs.data).event.ref}}
+        EOS
+      if: |
+        contains(fromJSON('["create", "delete"]'), env.GHA_EVENT_NAME) && fromJSON(inputs.data).event.ref_type == 'branch'
+
+    - shell: bash
+      run: |
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_REF=refs/tags/${{fromJSON(inputs.data).event.ref}}
+        EOS
+      if: |
+        contains(fromJSON('["create", "delete"]'), env.GHA_EVENT_NAME) && fromJSON(inputs.data).event.ref_type == 'tag'
+
+    - shell: bash
+      run: |
+        # TODO GITHUB_REF: Branch or tag to be deployed (empty if created with a commit SHA)
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_SHA=${{fromJSON(inputs.data).event.deployment.sha}}
+        GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.deployment.sha}}
+        GHA_REF=refs/heads/${{fromJSON(inputs.data).event.deployment.ref}}
+        GHA_REF_NAME=${{fromJSON(inputs.data).event.deployment.ref}}
+        EOS
+      if: env.GHA_EVENT_NAME == 'deployment' || env.GHA_EVENT_NAME == 'deployment_status'
 
       # TODO GITHUB_REF
       # > The branch or tag ref that triggered the workflow run.

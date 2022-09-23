@@ -1,0 +1,8 @@
+event_name: pull_request
+pull_request:
+  merge_commit_sha: 4528ea7ab7a8eef7e596097934a78eab90fb8b33
+  base:
+    ref: main
+  head:
+    sha: b6d8f3331c6845997b9408163a127e01fd32c120
+    ref: renovate/github.com-aws-aws-sdk-go-1.x
