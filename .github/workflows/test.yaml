@@ -7,194 +7,36 @@ on:
     branches: [main]
 
 jobs:
-  test-pull-request:
+  list-files:
     runs-on: ubuntu-latest
+    outputs:
+      files: ${{env.FILES}}
     steps:
       - uses: actions/checkout@v3
-      - uses: ./
+      - uses: actions/setup-go@v3
         with:
-          data: |
-            {
-              "event_name": "pull_request",
-              "event": {
-                "number": 149,
-                "sender": {
-                  "login": "suzuki-shunsuke"
-                },
-                "repository": {
-                  "full_name": "gha-trigger/gha-trigger",
-                  "name": "gha-trigger",
-                  "owner": {
-                    "login": "gha-trigger"
-                  }
-                },
-                "pull_request": {
-                  "base": {
-                    "ref": "main"
-                  },
-                  "head": {
-                    "sha": "b6d8f3331c6845997b9408163a127e01fd32c120",
-                    "ref": "renovate/github.com-aws-aws-sdk-go-1.x"
-                  },
-                  "html_url": "https://github.com/gha-trigger/step-summary-action/pull/9"
-                }
-              },
-              "pull_request": {
-                "merge_commit_sha": "4528ea7ab7a8eef7e596097934a78eab90fb8b33",
-                "base": {
-                  "ref": "main"
-                },
-                "head": {
-                  "sha": "b6d8f3331c6845997b9408163a127e01fd32c120",
-                  "ref": "renovate/github.com-aws-aws-sdk-go-1.x"
-                },
-                "html_url": "https://github.com/gha-trigger/step-summary-action/pull/9"
-              }
-            }
-      - name: Test GHA_ACTOR
-        run: |
-          [ "$GHA_ACTOR" = suzuki-shunsuke ]
-      - name: Test GHA_EVENT_NAME
-        run: |
-          [ "$GHA_EVENT_NAME" = pull_request ]
-      - name: Test GHA_REPOSITORY
-        run: |
-          [ "$GHA_REPOSITORY" = gha-trigger/gha-trigger ]
-      - name: Test GHA_REPOSITORY_OWNER
-        run: |
-          [ "$GHA_REPOSITORY_OWNER" = gha-trigger ]
-      - name: Test GHA_REPOSITORY_NAME
-        run: |
-          [ "$GHA_REPOSITORY_NAME" = gha-trigger ]
-      - name: Test GHA_SHA
-        run: |
-          [ "$GHA_SHA" = 4528ea7ab7a8eef7e596097934a78eab90fb8b33 ]
-      - name: Test GHA_COMMIT_STATUS_SHA
-        run: |
-          [ "$GHA_COMMIT_STATUS_SHA" = b6d8f3331c6845997b9408163a127e01fd32c120 ]
-      - name: Test GHA_BASE_REF
-        run: |
-          [ "$GHA_BASE_REF" = main ]
-      - name: Test GHA_HEAD_SHA
-        run: |
-          [ "$GHA_HEAD_SHA" = b6d8f3331c6845997b9408163a127e01fd32c120 ]
-      - name: Test GHA_REF
-        run: |
-          [ "$GHA_REF" = refs/pull/149/merge ]
-      - name: Test GHA_REF_NAME
-        run: |
-          [ "$GHA_REF_NAME" = 149/merge ]
-      - name: Test GHA_PULL_REQUEST_NUMBER
-        run: |
-          [ "$GHA_PULL_REQUEST_NUMBER" = 149 ]
-      - name: Test GHA_ENV
-        run: |
-          [ -n "$GHA_ENV" ]
-  test-push:
+          go-version: "1.19.1"
+          cache: true
+      - run: go run ./cmd/list
+
+  test:
     runs-on: ubuntu-latest
+    name: "test (${{matrix.file}})"
+    needs: list-files
+    env:
+      FILE: ${{matrix.file}}
+    strategy:
+      fail-fast: false
+      matrix:
+        file: ${{fromJSON(needs.list-files.outputs.files)}}
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.19.1"
+          cache: true
+      - run: go run ./cmd/setter "$FILE"
       - uses: ./
         with:
-          data: |
-            {
-              "event_name": "push",
-              "event": {
-                "ref": "refs/heads/renovate/github.com-aws-aws-sdk-go-1.x",
-                "sender": {
-                  "login": "suzuki-shunsuke"
-                },
-                "head_commit": {
-                  "id": "a705bd6d8bc3882c983477cb3f20ab74ef8c24c2"
-                },
-                "repository": {
-                  "full_name": "gha-trigger/gha-trigger",
-                  "name": "gha-trigger",
-                  "owner": {
-                    "login": "gha-trigger"
-                  }
-                }
-              }
-            }
-      - name: Test GHA_ACTOR
-        run: |
-          [ "$GHA_ACTOR" = suzuki-shunsuke ]
-      - name: Test GHA_EVENT_NAME
-        run: |
-          [ "$GHA_EVENT_NAME" = push ]
-      - name: Test GHA_REPOSITORY
-        run: |
-          [ "$GHA_REPOSITORY" = gha-trigger/gha-trigger ]
-      - name: Test GHA_REPOSITORY_OWNER
-        run: |
-          [ "$GHA_REPOSITORY_OWNER" = gha-trigger ]
-      - name: Test GHA_REPOSITORY_NAME
-        run: |
-          [ "$GHA_REPOSITORY_NAME" = gha-trigger ]
-      - name: Test GHA_SHA
-        run: |
-          [ "$GHA_SHA" = a705bd6d8bc3882c983477cb3f20ab74ef8c24c2 ]
-      - name: Test GHA_COMMIT_STATUS_SHA
-        run: |
-          [ "$GHA_COMMIT_STATUS_SHA" = a705bd6d8bc3882c983477cb3f20ab74ef8c24c2 ]
-      - name: Test GHA_REF
-        run: |
-          [ "$GHA_REF" = refs/heads/renovate/github.com-aws-aws-sdk-go-1.x ]
-      - name: Test GHA_REF_NAME
-        run: |
-          [ "$GHA_REF_NAME" = renovate/github.com-aws-aws-sdk-go-1.x ]
-      - name: Test GHA_ENV
-        run: |
-          [ -n "$GHA_ENV" ]
-  test-release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./
-        with:
-          data: |
-            {
-              "event_name": "release",
-              "event": {
-                "sender": {
-                  "login": "suzuki-shunsuke"
-                },
-                "release": {
-                  "tag_name": "v0.1.0"
-                },
-                "repository": {
-                  "full_name": "gha-trigger/gha-trigger",
-                  "name": "gha-trigger",
-                  "owner": {
-                    "login": "gha-trigger"
-                  }
-                }
-              }
-            }
-      - name: Test GHA_ACTOR
-        run: |
-          [ "$GHA_ACTOR" = suzuki-shunsuke ]
-      - name: Test GHA_EVENT_NAME
-        run: |
-          [ "$GHA_EVENT_NAME" = release ]
-      - name: Test GHA_REPOSITORY
-        run: |
-          [ "$GHA_REPOSITORY" = gha-trigger/gha-trigger ]
-      - name: Test GHA_REPOSITORY_OWNER
-        run: |
-          [ "$GHA_REPOSITORY_OWNER" = gha-trigger ]
-      - name: Test GHA_REPOSITORY_NAME
-        run: |
-          [ "$GHA_REPOSITORY_NAME" = gha-trigger ]
-      - name: Test GHA_SHA
-        run: |
-          [ "$GHA_SHA" = "" ]
-      - name: Test GHA_REF
-        run: |
-          [ "$GHA_REF" = v0.1.0 ]
-      - name: Test GHA_REF_NAME
-        run: |
-          [ "$GHA_REF_NAME" = v0.1.0 ]
-      - name: Test GHA_ENV
-        run: |
-          [ -n "$GHA_ENV" ]
+          data: ${{toJSON(fromJSON(env.DATA).data)}}
+      - run: go run ./cmd/tester "$FILE"

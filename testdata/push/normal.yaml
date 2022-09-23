@@ -1,0 +1,24 @@
+envs:
+  GHA_ACTOR: suzuki-shunsuke
+  GHA_EVENT_NAME: push
+  GHA_REPOSITORY: gha-trigger/gha-trigger
+  GHA_REPOSITORY_OWNER: gha-trigger
+  GHA_REPOSITORY_NAME: gha-trigger
+  GHA_SHA: a705bd6d8bc3882c983477cb3f20ab74ef8c24c2
+  GHA_COMMIT_STATUS_SHA: a705bd6d8bc3882c983477cb3f20ab74ef8c24c2
+  GHA_REF: refs/heads/renovate/github.com-aws-aws-sdk-go-1.x
+  GHA_REF_NAME: renovate/github.com-aws-aws-sdk-go-1.x
+
+data:
+  event_name: push
+  event:
+    ref: refs/heads/renovate/github.com-aws-aws-sdk-go-1.x
+    sender:
+      login: suzuki-shunsuke
+    head_commit:
+      id: a705bd6d8bc3882c983477cb3f20ab74ef8c24c2
+    repository:
+      full_name: gha-trigger/gha-trigger
+      name: gha-trigger
+      owner:
+        login: gha-trigger
