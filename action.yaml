@@ -106,21 +106,23 @@ runs:
         cat << EOS >> "$GITHUB_ENV"
         GHA_REF_NAME=${{fromJSON(inputs.data).event.ref}}
         EOS
-      if: env.GHA_EVENT_NAME == 'create'
+      if: contains(fromJSON('["create", "delete"]'), env.GHA_EVENT_NAME)
 
     - shell: bash
       run: |
         cat << EOS >> "$GITHUB_ENV"
         GHA_REF=refs/heads/${{fromJSON(inputs.data).event.ref}}
         EOS
-      if: "env.GHA_EVENT_NAME == 'create' && fromJSON(inputs.data).event.ref_type == 'branch'"
+      if: |
+        contains(fromJSON('["create", "delete"]'), env.GHA_EVENT_NAME) && fromJSON(inputs.data).event.ref_type == 'branch'
 
     - shell: bash
       run: |
         cat << EOS >> "$GITHUB_ENV"
         GHA_REF=refs/tags/${{fromJSON(inputs.data).event.ref}}
         EOS
-      if: "env.GHA_EVENT_NAME == 'create' && fromJSON(inputs.data).event.ref_type == 'tag'"
+      if: |
+        contains(fromJSON('["create", "delete"]'), env.GHA_EVENT_NAME) && fromJSON(inputs.data).event.ref_type == 'tag'
 
     - shell: bash
       run: |
