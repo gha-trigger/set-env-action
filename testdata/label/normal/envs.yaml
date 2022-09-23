@@ -1,0 +1,9 @@
+GHA_ACTOR: Codertocat
+GHA_EVENT_NAME: label
+GHA_REPOSITORY: Codertocat/Hello-World
+GHA_REPOSITORY_OWNER: Codertocat
+GHA_REPOSITORY_NAME: Hello-World
+GHA_SHA:
+GHA_COMMIT_STATUS_SHA:
+GHA_REF: refs/heads/master
+GHA_REF_NAME: master
