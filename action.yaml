@@ -101,6 +101,24 @@ runs:
         EOS
       if: "env.GHA_EVENT_NAME == 'push' && startsWith(env.GHA_REF, 'refs/tags/')"
 
+    - shell: bash
+      run: |
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_REF=${{fromJSON(inputs.data).event.ref}}
+        GHA_REF_NAME=${{fromJSON(inputs.data).event.ref}}
+        EOS
+      if: env.GHA_EVENT_NAME == 'create'
+
+    - shell: bash
+      run: |
+        cat << EOS >> "$GITHUB_ENV"
+        GHA_SHA=${{fromJSON(inputs.data).event.deployment.sha}}
+        GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.deployment.sha}}
+        GHA_REF=${{fromJSON(inputs.data).event.deployment.ref}}
+        GHA_REF_NAME=${{fromJSON(inputs.data).event.deployment.ref}}
+        EOS
+      if: env.GHA_EVENT_NAME == 'deployment' || env.GHA_EVENT_NAME == 'deployment_status'
+
       # TODO GITHUB_REF
       # > The branch or tag ref that triggered the workflow run.
       # > For other triggers, this is the branch or tag ref that triggered the workflow run.

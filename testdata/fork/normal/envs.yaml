@@ -1,9 +1,9 @@
-GHA_ACTOR: suzuki-shunsuke
-GHA_EVENT_NAME: pull_request
-GHA_REPOSITORY: gha-trigger/gha-trigger
-GHA_REPOSITORY_OWNER: gha-trigger
-GHA_REPOSITORY_NAME: gha-trigger
-GHA_SHA: 4528ea7ab7a8eef7e596097934a78eab90fb8b33
-GHA_COMMIT_STATUS_SHA: b6d8f3331c6845997b9408163a127e01fd32c120
-GHA_REF: refs/pull/149/merge
-GHA_REF_NAME: 149/merge
+GHA_ACTOR: Octocoders
+GHA_EVENT_NAME: fork
+GHA_REPOSITORY: Codertocat/Hello-World
+GHA_REPOSITORY_OWNER: Codertocat
+GHA_REPOSITORY_NAME: Hello-World
+GHA_SHA:
+GHA_COMMIT_STATUS_SHA:
+GHA_REF: master
+GHA_REF_NAME: master
