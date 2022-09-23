@@ -29,6 +29,8 @@ runs:
         GHA_SHA=${{fromJSON(inputs.data).event.sha}}
         GHA_COMMIT_STATUS_SHA=${{fromJSON(inputs.data).event.sha}}
         GHA_EVENT_PATH=$event_path
+        GHA_REF=${{fromJSON(inputs.data).event.repository.default_branch}}
+        GHA_REF_NAME=${{fromJSON(inputs.data).event.repository.default_branch}}
         EOS
       env:
         INPUTS_EVENT: ${{toJSON(fromJSON(inputs.data).event)}}

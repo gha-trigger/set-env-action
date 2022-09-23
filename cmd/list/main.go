@@ -15,15 +15,20 @@ func main() {
 }
 
 func core() error {
-	files, err := filepath.Glob("testdata/*/*")
+	envFiles, err := filepath.Glob("testdata/*/*/envs.yaml")
 	if err != nil {
 		return err
 	}
-	b, err := json.Marshal(files)
+	dirs := make([]string, len(envFiles))
+	for i, envFile := range envFiles {
+		dirs[i] = filepath.Dir(envFile)
+	}
+
+	b, err := json.Marshal(dirs)
 	if err != nil {
 		return err
 	}
 
-	githubactions.SetEnv("FILES", string(b))
+	githubactions.SetEnv("DIRS", string(b))
 	return nil
 }

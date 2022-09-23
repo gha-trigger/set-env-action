@@ -10,7 +10,7 @@ jobs:
   list-files:
     runs-on: ubuntu-latest
     outputs:
-      files: ${{env.FILES}}
+      dirs: ${{env.DIRS}}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
@@ -21,22 +21,22 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    name: "test (${{matrix.file}})"
+    name: "test (${{matrix.dir}})"
     needs: list-files
     env:
-      FILE: ${{matrix.file}}
+      DIR: ${{matrix.dir}}
     strategy:
       fail-fast: false
       matrix:
-        file: ${{fromJSON(needs.list-files.outputs.files)}}
+        dir: ${{fromJSON(needs.list-files.outputs.dirs)}}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
           go-version: "1.19.1"
           cache: true
-      - run: go run ./cmd/setter "$FILE"
+      - run: go run ./cmd/setter "$DIR"
       - uses: ./
         with:
-          data: ${{toJSON(fromJSON(env.DATA).data)}}
-      - run: go run ./cmd/tester "$FILE"
+          data: ${{env.DATA}}
+      - run: go run ./cmd/tester "$DIR"

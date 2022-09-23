@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"os"
+	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
@@ -14,26 +15,21 @@ func main() {
 	}
 }
 
-type Config struct {
-	Envs map[string]string
-	Data interface{}
-}
-
 func core() error {
 	// read config file
 	// test envs
-	file := os.Args[1]
-	cfg := &Config{}
-	f, err := os.Open(file)
+	dir := os.Args[1]
+	envs := map[string]string{}
+	f, err := os.Open(filepath.Join(dir, "envs.yaml"))
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	if err := yaml.NewDecoder(f).Decode(cfg); err != nil {
+	if err := yaml.NewDecoder(f).Decode(&envs); err != nil {
 		return err
 	}
 	failed := false
-	for envName, expValue := range cfg.Envs {
+	for envName, expValue := range envs {
 		actValue := os.Getenv(envName)
 		if expValue != actValue {
 			log.Printf("[ERROR] the environment variable %s is wrong: wanted %s, got %s", envName, expValue, actValue)
